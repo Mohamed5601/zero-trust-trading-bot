@@ -32,8 +32,8 @@ MY_MIN_SNIPER = 0        # أقل درجة قنص (دخول) مقبولة
 MY_MIN_TREND = 0         # أقل قوة ترند مقبولة
 
 TIMEFRAME = '15m'
-TELEGRAM_TOKEN = "8464093213:AAGUE7q_ZdzeSLC_INsgR35bvWa8HkfrB9s" # من config.py
-TELEGRAM_CHAT_ID = "7801711364" # من config.py
+TELEGRAM_TOKEN = "YOUR_KEY_HERE" # من config.py
+TELEGRAM_CHAT_ID = "YOUR_KEY_HERE" # من config.py
 BUY_THRESHOLD = 60 # درجة الدخول الكلية
 
 # التعديل: تفعيل وضع التداول الفوري (Spot) حصراً
