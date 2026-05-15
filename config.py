@@ -10,8 +10,8 @@ SYMBOLS = [
 ]
 
 # --- 1. إعدادات التليجرام ---
-TELEGRAM_TOKEN = ""
-TELEGRAM_CHAT_ID = ""
+TELEGRAM_TOKEN = "YOUR_KEY_HERE"
+TELEGRAM_CHAT_ID = "YOUR_KEY_HERE"
 
 # الفاصل الزمني بين كل سحبة بيانات (بالثواني)
 # 300 ثانية = 5 دقائق
@@ -22,10 +22,10 @@ DB_NAME = 'market_data.db'
 
 # --- إعدادات الأخبار والذكاء الاصطناعي ---
 # مفتاح CryptoPanic (المصدر)
-CRYPTOPANIC_TOKEN = ""
+CRYPTOPANIC_TOKEN = "YOUR_KEY_HERE"
 
 
-GEMINI_API_KEY = ""
+GEMINI_API_KEY = "YOUR_KEY_HERE"
 
 # كلمات مفتاحية لو الخبر احتوى عليها نعتبره هام جداً (اختياري)
 IMPORTANT_KEYWORDS = ['Binance', 'SEC', 'ETF', 'Rate Cut', 'Inflation', 'Powell']
