@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ==========================================
+# 🛑 GrandMaster Custom Security Rules 🛑
+# ==========================================
+
+# My sensitive API keys and configurations
+config.py
+
+# Trading journals, logs, and custom databases
+*.csv
+/data/
