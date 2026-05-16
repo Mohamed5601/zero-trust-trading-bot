@@ -10,22 +10,32 @@ This setup sits in the middle: a lightweight scout layer monitors the market in 
 
 ## Architecture
 
-### 1. Market Scout Layer (Continuous Filtering)
-This layer runs constantly to monitor the market and filter out the noise.
-* `get_top_volume_coins.py`: A lightweight scanner that tracks relative volume changes and flags unusual spikes.
-* `whale_radar.py`: Monitors real-time order flows to estimate large buying and selling pressure.
+### 1. Scout & Real-Time Monitoring Layer
+This layer runs continuously and filters the market in real time. Its main job is to detect unusual movement early without running heavy analysis on every asset. 
+If you're experimenting with short-term or fast scalping setups, this is the part responsible for feeding the system with low-latency market data.
 
-**Output:** A filtered shortlist of assets showing abnormal activity, ready for deep inspection.
+* **`radar.py`**: Streams live price and open interest updates through WebSockets with minimal delay. Mainly used for monitoring fast momentum changes and short-term volatility.
+* **`get_top_volume_coins.py`**: Tracks relative volume expansion across assets and flags abnormal spikes.
+* **`whale_radar.py`**: Watches order flow activity to estimate larger buying and selling pressure. (Older REST-based implementation kept for compatibility/testing.)
 
-### 2. Analysis Layer (Triggered on Demand)
-Once the scout layer flags a specific coin, it automatically hands it over to these independent modules:
-* `general_bot.py`: Evaluates the macro trend direction and basic market structure.
-* `volume_bot.py`: Checks volume expansion to confirm if the momentum is real.
-* `sniper_bot.py`: Looks for short-term entry zones based on volatility patterns.
-* `risk_bot.py`: Dynamically calculates Stop-Loss and Take-Profit levels using ATR volatility.
-* `ai_agent.py`: An XGBoost classifier that estimates short-term directional bias using engineered features.
-* `market_analyst.py`: Connects to the Gemini API to turn raw technical metrics into a readable text summary.
+* **Output:** A filtered list of assets showing unusual activity or momentum changes.
 
+### 2. Analysis & Execution Layer
+Once an asset is flagged by the scout layer, it is passed into a group of independent modules for deeper evaluation and trade management.
+
+* **`ZK.py`**: Experimental scalping module designed to work alongside the live stream from radar.py. Focuses on fast reaction and short-duration trade tracking.
+* **`general_bot.py`**: Evaluates overall trend direction and market structure.
+* **`volume_bot.py`**: Confirms whether momentum is supported by volume expansion.
+* **`sniper_bot.py`**: Searches for short-term entry zones based on volatility behavior.
+* **`risk_bot.py`**: Calculates dynamic Stop-Loss and Take-Profit levels using ATR-based volatility measurements.
+* **`ai_agent.py`**: XGBoost classifier trained on engineered market features to estimate short-term directional bias.
+* **`market_analyst.py`**: Uses the Gemini API to convert raw technical outputs into a readable market summary.
+
+### 3. Data & Model Layer
+This layer separates stored models and historical datasets from the live execution logic.
+
+* **`/models`**: Contains pre-trained .pkl models for assets such as BTC, ETH, XRP, ADA, and DOGE.
+* **`/data`**: Historical .csv datasets collected during 2025 and used for training, testing, and parameter tuning.
 ---
 
 ## Design Choices
