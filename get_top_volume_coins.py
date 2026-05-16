@@ -27,8 +27,8 @@ except SyntaxError:
     sys.exit()
 
 # --- 1. إعدادات التليجرام ---
-TELEGRAM_TOKEN = "8464093213:AAGUE7q_ZdzeSLC_INsgR35bvWa8HkfrB9s"
-TELEGRAM_CHAT_ID = "-1003484158830"
+TELEGRAM_TOKEN = ""
+TELEGRAM_CHAT_ID = ""
 
 # --- 2. إعداد الاتصال بالمنصة ---
 exchange = ccxt.binance({
