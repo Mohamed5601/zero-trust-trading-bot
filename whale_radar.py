@@ -8,10 +8,11 @@ from config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 WATCHLIST = [
     'SOLUSDT', 
     "STX/USDT",  
-   # 'SUIUSDT',      
-    'ETHUSDT',   
-    'XRPUSDT', 
-    'BTCUSDT'      
+  #  'SUIUSDT',      
+   # 'DOGEUSDT',   
+   # 'XRPUSDT', 
+   # 'SOLUSDT'     
+   'BTCUSDT', 
 ]
 WHALE_THRESHOLD_USD = 50_000 
 BASE_URL = "https://fapi.binance.com"
