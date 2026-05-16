@@ -1,106 +1,77 @@
-# Quant-Intel: Event-Driven Crypto Market Analysis
+# Quant-Intel
 
-A modular, event-driven crypto market analysis pipeline built for selective computation and multi-layer signal generation.
+Quant-Intel is a modular, event-driven system built to analyze crypto markets without burning unnecessary CPU cycles. Instead of running heavy calculations on every asset 24/7, it filters the market first and only triggers deep analysis when it detects unusual activity.
 
-Quant-Intel is a research system designed to reduce unnecessary computation in market analysis by only activating heavy logic when abnormal market behavior is detected. The system combines rule-based heuristics, statistical indicators, and machine learning models in a staged pipeline.
+## Why I built it this way
 
-## Overview
+Most trading setups either run heavy analysis continuously on everything (which is slow, expensive, and noisy) or rely on simple rules that completely miss the market context. 
 
-Most trading systems either:
-* Run heavy analysis continuously on all assets (expensive and noisy), or
-* Rely on overly simplified signal logic.
-
-Quant-Intel sits in between. It introduces a two-stage architecture:
-1. Lightweight market scanning
-2. Targeted multi-agent analysis on selected assets
-
-The goal is not to predict the market perfectly, but to structure analysis in a way that is efficient, modular, and testable.
-
----
+This setup sits in the middle: a lightweight scout layer monitors the market in the background, and a more detailed multi-bot analysis pipeline kicks in only when a real trigger occurs. The goal was to build a system that is efficient, modular, and easy to debug.
 
 ## Architecture
 
-### 1. Market Scout Layer
-This layer runs continuously and is responsible for filtering the market.
+### 1. Market Scout Layer (Continuous Filtering)
+This layer runs constantly to monitor the market and filter out the noise.
+* `get_top_volume_coins.py`: A lightweight scanner that tracks relative volume changes and flags unusual spikes.
+* `whale_radar.py`: Monitors real-time order flows to estimate large buying and selling pressure.
 
-**Components:**
-* `get_top_volume_coins.py`: Tracks relative volume changes across assets and identifies anomalies.
-* `whale_radar.py`: Monitors order flow patterns to approximate buy/sell pressure.
+**Output:** A filtered shortlist of assets showing abnormal activity, ready for deep inspection.
 
-**Output:**
-A filtered list of assets that show unusual activity or structural changes in flow. The scout layer is intentionally lightweight and prioritizes coverage over depth.
-
-### 2. Analysis Layer
-Once an asset passes the scout filter, it is passed into a set of independent analysis modules. Each module focuses on a specific aspect of market behavior:
-
-* **`general_bot.py`**
-  Evaluates overall trend direction and market structure.
-* **`volume_bot.py`**
-  Analyzes volume expansion and confirms momentum consistency.
-* **`sniper_bot.py`**
-  Attempts to identify potential entry zones based on short-term volatility patterns.
-* **`risk_bot.py`**
-  Calculates dynamic risk parameters (stop-loss / take-profit) using volatility measures such as ATR.
-* **`ai_agent.py`**
-  Machine learning model (XGBoost) trained on engineered features to estimate short-term directional bias.
-* **`market_analyst.py`**
-  Aggregates outputs into a readable summary of market conditions for interpretation.
+### 2. Analysis Layer (Triggered on Demand)
+Once the scout layer flags a specific coin, it automatically hands it over to these independent modules:
+* `general_bot.py`: Evaluates the macro trend direction and basic market structure.
+* `volume_bot.py`: Checks volume expansion to confirm if the momentum is real.
+* `sniper_bot.py`: Looks for short-term entry zones based on volatility patterns.
+* `risk_bot.py`: Dynamically calculates Stop-Loss and Take-Profit levels using ATR volatility.
+* `ai_agent.py`: An XGBoost classifier that estimates short-term directional bias using engineered features.
+* `market_analyst.py`: Connects to the Gemini API to turn raw technical metrics into a readable text summary.
 
 ---
 
-## Design Principles
+## Design Choices
 
-* **Event-driven execution**
-  The system does not run full analysis continuously. Computation is triggered only when market conditions justify it.
-
-* **Modular separation**
-  Each analytical component is independent. This allows:
-  * Easier testing
-  * Isolated improvements
-  * Replacement of individual strategies without breaking the pipeline
-
-* **Hybrid reasoning**
-  The system does not rely on a single approach:
-  * Rule-based logic for structure
-  * Statistical indicators for confirmation
-  * ML model for probabilistic bias
+* **Event-Driven Execution:** Heavy analysis scripts stay idle until a volume or order flow trigger happens. No wasted compute.
+* **Strict Modularity:** Every module operates in isolation. You can rewrite, tweak, or replace any bot without breaking the rest of the pipeline.
+* **Hybrid Logic:** The system doesn't rely on just one tool. It combines structural rules, statistical indicators, and machine learning probability.
 
 ---
 
 ## Tech Stack
 
-* **Core:** Python 3.x
-* **Data & Math:** `pandas` / `numpy` / `pandas-ta`
-* **Intelligence:** `XGBoost`
-* **Infrastructure:** `ccxt` (exchange data integration) / `cloudscraper` (data acquisition layer)
-* **Alerting:** Telegram Bot API
+* Python 3.x
+* pandas, numpy, pandas-ta
+* XGBoost
+* ccxt & cloudscraper
+* Telegram Bot API
 
 ---
 
-## Output Flow
+## The Flow
 
-1. Market scanner detects abnormal volume activity.
-2. Whale radar validates flow imbalance.
-3. Asset is passed to analysis pipeline.
-4. Each module produces independent signals.
-5. Signals are aggregated into a final structured report.
-6. Optional alert is sent via Telegram.
-
----
-
-## Limitations
-
-This system is experimental and should not be considered production-grade. Current limitations include:
-* Sensitivity to market regime changes.
-* Dependency on data quality from external sources.
-* Signal aggregation is still heuristic-based.
-* ML model requires continuous retraining for stability.
+1. Market scanner detects a sudden volume spike.
+2. Whale radar checks if big players are backing the move.
+3. The selected asset is routed into the analysis pipeline.
+4. Each module processes the data and generates its own signal.
+5. Results are aggregated into a single report and sent via Telegram.
 
 ---
 
-## Status & Notes
+## Project Status: Completed Build (Archived Late 2025)
 
-**Active research prototype.**
-The focus is on architecture design and signal structuring rather than guaranteed predictive performance.
+This is a finished, feature-complete research project. Active development successfully concluded at the end of 2025, and the codebase is locked as a stable reference design.
 
-*Note:* The system is intentionally designed to be inspectable. Every decision path can be traced back to a specific module rather than a single opaque model.
+* **Note on Maintenance (2026+):** Because exchange APIs (CCXT/Binance) and LLM endpoints (Gemini) change frequently, running this codebase today will require routine dependency updates and minor refactoring to fix payload structures and broken package specs.
+
+---
+
+## Guidelines & Disclaimer
+
+* **Test with fake money first:** If you intend to use this framework for personal trading, run it in a paper-trading environment first. Default parameters are just examples; you are fully responsible for tuning configurations to match your own risk tolerance.
+* **Legal Disclaimer:** This software is provided "as is" for research and educational purposes. The author assumes no responsibility or legal liability for financial losses, bugs, or misuse of this code. Live deployment is strictly at your own risk.
+* **No Black Boxes:** The entire system is completely transparent. Every single alert can be audited and traced back to the exact code module that triggered it.
+
+---
+
+## Contact
+
+If you have any questions, need help setting up the system, or want to discuss the architecture, feel free to reach out via email at: **bvize.com@gmail.com**
